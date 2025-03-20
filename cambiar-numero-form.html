@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario para cambiar número</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            background-color: #f5f5f5;
+            padding: 25px;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulario para cambiar número</h1>
+    
+    <form id="formCambiarNumero">
+        <label for="nuevo_numero">Número:</label>
+        <input type="number" id="nuevo_numero" name="numero" value="">
+        
+        <label for="vaciar_numero">Vaciar número:</label>
+        <select id="vaciar_numero" name="vaciar_numero">
+            <option value="0">No</option>
+            <option value="1">Sí, vaciar número</option>
+        </select>
+        
+        <button type="submit">Cambiar</button>
+    </form>
+    
+    <p id="mensaje"></p>
+
+    <!-- Firebase App (es la base) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+  apiKey: "AIzaSyBMpv8I8RyrDFvSF5atpHTgVMqR_Hz3AoY",
+  authDomain: "numero-sincronizacion.firebaseapp.com",
+  databaseURL: "https://numero-sincronizacion-default-rtdb.firebaseio.com",
+  projectId: "numero-sincronizacion",
+  storageBucket: "numero-sincronizacion.firebasestorage.app",
+  messagingSenderId: "298402959829",
+  appId: "1:298402959829:web:f0482c0007a11500886d5c",
+  measurementId: "G-ZQG9SPBT2P"
+};
+    
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Obtener referencia a la base de datos
+        const database = firebase.database();
+        const numeroRef = database.ref('numero');
+        
+        // Cargar el número actual al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            numeroRef.once('value').then((snapshot) => {
+                const data = snapshot.val();
+                document.getElementById("nuevo_numero").value = data || "";
+            }).catch(error => {
+                console.error("Error al obtener el número:", error);
+                document.getElementById("mensaje").textContent = "Error al cargar el número. Inténtelo de nuevo.";
+            });
+        });
+        
+        // Procesar el formulario
+        document.getElementById("formCambiarNumero").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            const nuevoNumero = document.getElementById("nuevo_numero").value;
+            const vaciarNumero = document.getElementById("vaciar_numero").value === "1";
+            
+            // Determinar el valor final según la opción de vaciar
+            const valorFinal = vaciarNumero ? "" : nuevoNumero;
+            
+            // Actualizar el número en Firebase
+            numeroRef.set(valorFinal)
+                .then(() => {
+                    document.getElementById("mensaje").textContent = "Número actualizado correctamente.";
+                    setTimeout(() => {
+                        window.location.href = "cambiar-numero-form.html";
+                    }, 1500);
+                })
+                .catch(error => {
+                    console.error("Error al actualizar el número:", error);
+                    document.getElementById("mensaje").textContent = "Error al actualizar el número. Inténtelo de nuevo.";
+                });
+        });
+    </script>
+</body>
+</html>

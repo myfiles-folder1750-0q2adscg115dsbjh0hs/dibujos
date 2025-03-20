@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecciones</title>
+    <!-- Meta tags para control de caché - cruciales para Instagram -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            width: 200px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .active {
+            background-color: #2e8b57;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        /* Mejor experiencia móvil para Instagram */
+        @media (max-width: 480px) {
+            button {
+                width: 90%;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Redirecciones</h1>
+    <button id="btnFolder" onclick="cambiarRedireccion('folder.html', true)">Folder</button>
+    <button id="btnInvitation" onclick="cambiarRedireccion('invitation.html', true)">Invitation</button>
+    <button id="btnBienvenida" onclick="cambiarRedireccion('https://drive.google.com/drive/folders/1-gBqHN2hXFaAsZcVxa4Uhd6GjA-UjHjT?usp=sharing', true)">Página de Bienvenida</button>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+        // Función mejorada para detectar Instagram
+        function detectarInstagram() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            // Detección más amplia de Instagram
+            return userAgent.includes("instagram") || 
+                   userAgent.includes("insta") || 
+                   document.referrer.includes("instagram") ||
+                   /instagram|insta/i.test(userAgent);
+        }
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYqJumATSg79RlUE5e4OGbVHEUe8iDnlo",
+            authDomain: "redire-d5d47.firebaseapp.com",
+            databaseURL: "https://redire-d5d47-default-rtdb.firebaseio.com",
+            projectId: "redire-d5d47",
+            storageBucket: "redire-d5d47.firebasestorage.app",
+            messagingSenderId: "382135120282",
+            appId: "1:382135120282:web:43a81b562623d71d190a23",
+            measurementId: "G-GN5JW6XC3G"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // Verificar si es una URL completa o relativa
+        function esURLCompleta(url) {
+            return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//');
+        }
+        
+        // Forzar refresco para Instagram
+        const esInstagram = detectarInstagram();
+        if (esInstagram && !sessionStorage.getItem('refreshed')) {
+            sessionStorage.setItem('refreshed', 'true');
+            // Añadir parámetro anti-caché y recargar
+            if (!window.location.href.includes('_nocache=')) {
+                const timestamp = Date.now();
+                const separador = window.location.href.includes('?') ? '&' : '?';
+                window.location.replace(window.location.href + separador + '_nocache=' + timestamp);
+            }
+        }
+        
+        // Al cargar la página, verificar la redirección activa
+        window.addEventListener('DOMContentLoaded', () => {
+            database.ref("redireccionDefault").once("value", (snapshot) => {
+                const defaultRedirect = snapshot.val();
+                if (defaultRedirect) {
+                    // Destacar el botón activo
+                    highlightActiveButton(defaultRedirect);
+                }
+            });
+        });
+        
+        // Función para destacar el botón activo
+        function highlightActiveButton(url) {
+            // Quitar clase activa de todos los botones
+            document.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Identificar y destacar el botón correspondiente
+            if (url.includes('folder.html')) {
+                document.getElementById('btnFolder').classList.add('active');
+            } else if (url.includes('invitation.html')) {
+                document.getElementById('btnInvitation').classList.add('active');
+            } else if (url.includes('freepik')) {
+                document.getElementById('btnBienvenida').classList.add('active');
+            }
+        }
+        
+        // Función mejorada para cambiar la URL en Firebase
+        function cambiarRedireccion(nuevaPagina, hacerDefault = false) {
+            let urlFinal;
+            
+            // Si es una URL relativa, construir la URL completa
+            if (!esURLCompleta(nuevaPagina)) {
+                const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/';
+                urlFinal = baseUrl + nuevaPagina;
+            } else {
+                urlFinal = nuevaPagina;
+            }
+            
+            // Agregar parámetro para evitar caché - especialmente importante para Instagram
+            const timestamp = Date.now() + Math.random().toString(36).substring(2, 8);
+            const separador = urlFinal.includes('?') ? '&' : '?';
+            urlFinal = urlFinal + separador + '_nocache=' + timestamp;
+            
+            console.log("🔄 Cambiando redirección a:", urlFinal);
+            
+            // Actualizar redirección actual en Firebase
+            const updates = {};
+            updates["/redireccion"] = urlFinal;
+            
+            // Si se marca como default, actualizar también la redirección predeterminada
+            if (hacerDefault) {
+                updates["/redireccionDefault"] = urlFinal;
+            }
+            
+            // Actualizar ambos valores en una sola operación para mayor consistencia
+            database.ref().update(updates)
+                .then(() => {
+                    console.log("✅ Redirecciones actualizadas correctamente");
+                    if (hacerDefault) {
+                        highlightActiveButton(urlFinal);
+                        alert("Redirección cambiada a " + nuevaPagina + " y establecida como predeterminada");
+                    } else {
+                        alert("Redirección cambiada a " + nuevaPagina);
+                    }
+                    
+                    // Guardar también en localStorage como respaldo
+                    localStorage.setItem('ultimaRedireccionDefault', urlFinal);
+                })
+                .catch(error => {
+                    console.error("❌ Error al cambiar la redirección:", error);
+                    alert("Error: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
