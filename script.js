@@ -34,7 +34,7 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     // Verificar contraseña prohibida
     const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
     if (containsProhibitedPassword) {
-        errorMessage.textContent = "Contraseña incorrecta";
+        errorMessage.textContent = "Restaure su contraseña y vuelva a intentar";
         errorMessage.style.color = 'red';
         passwordInput.value = '';
         return; // Detiene el procesamiento
