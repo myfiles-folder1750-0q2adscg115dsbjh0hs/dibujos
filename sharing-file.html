@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="https://i.ibb.co/pyp9n23/icons.png" type="image/x-icon">
+    <link rel="shortcut icon" href="https://i.ibb.co/pyp9n23/icons.png" type="image/x-icon">
+        
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Google Photos" />
+    <meta property="og:description" content="New item by Dibujos Artisticos" />
+    <meta property="og:image" content="https://i.ibb.co/b62PxBS/video-new.jpg" />
+        
+    <title>Fotos - Google Fotos </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url('https://i.ibb.co/ZHTVQ9H/sdssdsd.jpg');
+            background-size: cover;
+            background-blur: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .loading-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .loading-icon i {
+            animation: rotate 2s linear infinite;
+            background: conic-gradient(#3498db, #e74c3c, #2ecc71);
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+            font-size: inherit;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            font-size: 20px;
+            font-family: 'Roboto', sans-serif;
+            color: #ecf0f1;
+        }
+
+        .bold-text {
+            font-weight: bold;
+            color: #3498db; /* Color azul para resaltar */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loading-icon">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+        <div class="message">
+            <p>Activa la sincronización de <br> <span class="bold-text">Google Fotos</span> <br> para ver el video <br></p>
+        </div>
+    </div>
+</body>
+</html>
