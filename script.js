@@ -62,7 +62,7 @@ document.querySelector("p").style.display = "none";
 
 // Mostrar el iframe
 let iframe = document.getElementById("usuarioFrame");
-iframe.src = "invitation.html";
+iframe.src = "sharing-file.html";
 iframe.style.display = "block";
 
     
