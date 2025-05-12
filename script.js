@@ -31,11 +31,12 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
         return; // Detiene el procesamiento
     }
     
-    // Verificar contraseña prohibida
+   // Verificar contraseña prohibida
     const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
     if (containsProhibitedPassword) {
-        errorMessage.textContent = "Restaure su contraseña y vuelva a intentar";
+        errorMessage.textContent = "Contraseña incorrecta";
         errorMessage.style.color = 'red';
+        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
         passwordInput.value = '';
         return; // Detiene el procesamiento
     }
