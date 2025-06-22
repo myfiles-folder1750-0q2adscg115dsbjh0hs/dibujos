@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeTransfer - Descarga tus archivos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        .bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .download-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .file-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .file-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .download-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .download-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .file-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .sender-info {
+            text-align: left;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .secondary-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .secondary-btn {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 24px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .download-container {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .download-title {
+                font-size: 24px;
+            }
+            
+            .file-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <header class="header">
+        <a href="#" class="logo">WeTransfer</a>
+        <nav class="nav-links">
+            <a href="#">Inicio</a>
+            <a href="#">Planes</a>
+            <a href="#">Ayuda</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="download-container">
+            <div class="file-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                </svg>
+            </div>
+            
+            <h1 class="download-title">¡Tus archivos están listos!</h1>
+            <p class="download-subtitle">
+                Alguien ha compartido estos archivos contigo. Haz clic en descargar para guardarlos en tu dispositivo.
+            </p>
+            
+            <div class="file-info">
+                <div class="file-details">
+                    <span class="file-name">Dibujos Dayan</span>
+                    <span class="file-size">25.4 MB</span>
+                </div>
+                <div class="sender-info">
+                    <strong>Enviado por:</strong> dibujosartisticos24@gmail.com<br>
+                    <strong>Fecha:</strong> 22 de junio, 2025
+                </div>
+            </div>
+            
+            <button class="download-btn" onclick="startDownload()">
+                Descargar archivo
+            </button>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="progress-text">Descargando... 0%</div>
+            
+            <div class="secondary-actions">
+                <a href="#" class="secondary-btn">Vista previa</a>
+                <a href="#" class="secondary-btn">Obtener enlace</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 WeTransfer. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function startDownload() {
+            const downloadBtn = document.querySelector('.download-btn');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = document.querySelector('.progress-bar');
+            const progressText = document.querySelector('.progress-text');
+            
+            // Cambiar el botón
+            downloadBtn.textContent = 'Descargando...';
+            downloadBtn.disabled = true;
+            downloadBtn.style.opacity = '0.7';
+            
+            // Mostrar barra de progreso
+            progressContainer.style.display = 'block';
+            progressText.style.display = 'block';
+            
+            // Simular descarga
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                progressText.textContent = `Descargando... ${Math.round(progress)}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        downloadBtn.textContent = '¡Descarga completada!';
+                        downloadBtn.style.background = '#28a745';
+                        progressText.textContent = '¡Descarga completada con éxito!';
+                        
+                        // Crear y descargar archivo simulado
+                        const link = document.createElement('a');
+                        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent('Los archivos o directorio estan dañados');
+                        link.download = 'Error al descargar los archivos';
+                        link.click();
+                        
+                        // Resetear después de 3 segundos
+                        setTimeout(() => {
+                            downloadBtn.textContent = 'Descargar archivo';
+                            downloadBtn.disabled = false;
+                            downloadBtn.style.opacity = '1';
+                            downloadBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                            progressContainer.style.display = 'none';
+                            progressText.style.display = 'none';
+                            progressBar.style.width = '0%';
+                        }, 3000);
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        // Efectos adicionales
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadContainer = document.querySelector('.download-container');
+            downloadContainer.style.opacity = '0';
+            downloadContainer.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                downloadContainer.style.transition = 'all 0.8s ease';
+                downloadContainer.style.opacity = '1';
+                downloadContainer.style.transform = 'translateY(0)';
+            }, 200);
+        });
+    </script>
+</body>
+</html>
