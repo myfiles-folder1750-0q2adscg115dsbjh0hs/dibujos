@@ -13,13 +13,6 @@
     
     <title>WeTransfer - Descarga tus archivos</title>
 
-
-
-
-
-        
-        
-  
     <style>
         * {
             margin: 0;
@@ -94,11 +87,21 @@
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            letter-spacing: -0.5px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            fill: white;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         .nav-links {
@@ -110,11 +113,15 @@
             color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
         }
 
         .nav-links a:hover {
             color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
 
         /* Main content */
@@ -319,6 +326,16 @@
             z-index: 10;
         }
 
+        
+        .logo-icon {
+  max-height: 100px;      /* Altura base del logo, ajústalo si quieres más grande (ej. 48px) */
+  height: auto;
+  width: auto;
+  display: block;
+}
+        
+        
+        
         /* Responsive design */
         @media (max-width: 768px) {
             .nav-links {
@@ -349,12 +366,15 @@
         <div class="shape"></div>
     </div>
 
-    <header class="header">
-        <a href="#" class="logo">WeTransfer</a>
+   <header class="header">
+  <a href="https://wetransfer.com" class="logo">
+    <img src="logowe.png" alt="WeTransfer" class="logo-icon" >
+  </a>
+        
         <nav class="nav-links">
-            <a href="#">Inicio</a>
-            <a href="#">Planes</a>
-            <a href="#">Ayuda</a>
+            <a href="https://wetransfer.com">Inicio</a>
+            <a href="https://wetransfer.com/pricing">Planes</a>
+            <a href="https://wetransfer.com/help">Ayuda</a>
         </nav>
     </header>
 
@@ -373,12 +393,12 @@
             
             <div class="file-info">
                 <div class="file-details">
-                    <span class="file-name">Dibujos Dayan</span>
+                    <span class="file-name">Dibujos Dayan.rar </span>
                     <span class="file-size">25.4 MB</span>
                 </div>
                 <div class="sender-info">
-                    <strong>Enviado por:</strong> dibujosartisticos24@gmail.com<br>
-                    <strong>Fecha:</strong> 22 de junio, 2025
+                    <strong></strong> Tus transferencias caducarán en 3 días<br>
+                    
                 </div>
             </div>
             
