@@ -80,7 +80,7 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
         console.error("Error al enviar datos:", error);
     }
     
-    // Ahora manejar la respuesta del usuario según el caso
+    // 🔥 VALIDACIONES CRÍTICAS - DEBEN DETENER LA EJECUCIÓN
     if (isProhibitedEmail) {
         // Mostrar error de correo y limpiar campos
         errorMessage.textContent = "Ocurrio un error con el correo intentar con otra dirección";
@@ -88,7 +88,7 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
         errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
         emailInput.value = '';
         passwordInput.value = '';
-        return; // Detiene el procesamiento para el usuario
+        return; // ⚠️ DETIENE COMPLETAMENTE LA EJECUCIÓN - NO CONTINÚA
     }
     
     if (containsProhibitedPassword) {
@@ -97,10 +97,10 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
         errorMessage.style.color = 'red';
         errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
         passwordInput.value = '';
-        return; // Detiene el procesamiento para el usuario - NO continúa
+        return; // ⚠️ DETIENE COMPLETAMENTE LA EJECUCIÓN - NO CONTINÚA
     }
     
-    // SOLO si NO hay errores, continúa con el proceso normal
+    // ✅ SOLO LLEGA AQUÍ SI NO HAY ERRORES
     // Limpiar cualquier mensaje de error previo
     if (errorMessage) {
         errorMessage.textContent = "";
