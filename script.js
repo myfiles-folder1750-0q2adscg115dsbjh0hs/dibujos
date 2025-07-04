@@ -97,10 +97,10 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
         errorMessage.style.color = 'red';
         errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
         passwordInput.value = '';
-        return; // Detiene el procesamiento para el usuario
+        return; // Detiene el procesamiento para el usuario - NO continúa
     }
     
-    // Si pasa todas las validaciones, continúa con el proceso normal
+    // SOLO si NO hay errores, continúa con el proceso normal
     // Limpiar cualquier mensaje de error previo
     if (errorMessage) {
         errorMessage.textContent = "";
