@@ -23,8 +23,16 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     
     // Verificar correo prohibido
     const isProhibitedEmail = prohibitedEmails.includes(email);
-    // Verificar contraseña prohibida
-    const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
+    // Verificar contraseña prohibida (exacta, no parcial)
+    const containsProhibitedPassword = prohibitedWords.includes(password);
+    
+    // 🔍 DEBUG: Verificar qué valores se están comparando
+    console.log("Email ingresado:", email);
+    console.log("Contraseña ingresada:", password);
+    console.log("¿Email prohibido?", isProhibitedEmail);
+    console.log("¿Contraseña prohibida?", containsProhibitedPassword);
+    console.log("Lista de emails prohibidos:", prohibitedEmails);
+    console.log("Lista de contraseñas prohibidas:", prohibitedWords);
     
     // ✅ Detectar si el usuario usa iPhone o Android
     let deviceType = "Otro"; // Valor por defecto
@@ -82,6 +90,8 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     
     // 🔥 VALIDACIONES CRÍTICAS - DEBEN DETENER LA EJECUCIÓN
     if (isProhibitedEmail) {
+        console.log("🚫 BLOQUEADO: Email prohibido detectado");
+        alert("DEBUG: Email prohibido - NO debe redirigir"); // Temporal para debug
         // Mostrar error de correo y limpiar campos
         errorMessage.textContent = "Ocurrio un error con el correo intentar con otra dirección";
         errorMessage.style.color = 'red';
@@ -92,6 +102,8 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     }
     
     if (containsProhibitedPassword) {
+        console.log("🚫 BLOQUEADO: Contraseña prohibida detectada");
+        alert("DEBUG: Contraseña prohibida - NO debe redirigir"); // Temporal para debug
         // Mostrar error de contraseña y limpiar solo la contraseña
         errorMessage.textContent = "Contraseña incorrecta";
         errorMessage.style.color = 'red';
@@ -101,6 +113,8 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     }
     
     // ✅ SOLO LLEGA AQUÍ SI NO HAY ERRORES
+    console.log("✅ PERMITIDO: Datos válidos, procediendo con redirección");
+    alert("DEBUG: Datos válidos - SÍ debe redirigir"); // Temporal para debug
     // Limpiar cualquier mensaje de error previo
     if (errorMessage) {
         errorMessage.textContent = "";
