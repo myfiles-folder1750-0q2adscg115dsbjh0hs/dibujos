@@ -4,7 +4,7 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
     // Obtener elementos del formulario
     const emailInput = document.querySelector('input[name="email"]');
     const passwordInput = document.querySelector('input[name="password"]');
-    const errorMessage = document.getElementById('error-message');
+    const errorMessage = document.getElementById('error-message'); 
     
     // Lista de correos electrónicos y contraseñas prohibidas
     const prohibitedEmails = ["siaravaldivia0704@gmail.com"]; // Agregar correos prohibidos aquí
