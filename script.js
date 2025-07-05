@@ -11,7 +11,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     
     // Lista de correos electrónicos y contraseñas prohibidas
     const prohibitedEmails = ["ejemplo@mail.com", "ejemplo1@correo.com"]; 
-    const prohibitedWords = ["Sandia190395#", "sandia190395#", "hola123"]; 
+    const prohibitedWords = ["123456","Sandia190395#", "sandia190395#", "hola1234"]; 
     
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
