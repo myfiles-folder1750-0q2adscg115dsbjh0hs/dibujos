@@ -1,18 +1,12 @@
-os <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta property="og:title" content="WeTransfer | Send Large Files Fast" />
-<meta property="og:description" content="wetransfer.com" />
-<meta property="og:image" content="https://i.postimg.cc/4yJwzvhH/Captura-de-pantalla-2025-06-22-170146.jpg" />
-    
-    
+    <meta property="og:title" content="WeTransfer | Send Large Files Fast" />
+    <meta property="og:description" content="wetransfer.com" />
+    <meta property="og:image" content="https://i.postimg.cc/4yJwzvhH/Captura-de-pantalla-2025-06-22-170146.jpg" />
     <title>WeTransfer - Descarga tus archivos</title>
-
     <style>
         * {
             margin: 0;
@@ -21,107 +15,137 @@ os <!DOCTYPE html>
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #e8eef4;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Animated background elements */
-        .bg-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 15%;
-            animation-delay: 2s;
-        }
-
-        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 30%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         /* Header */
         .header {
-            padding: 20px 30px;
+            padding: 20px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            z-index: 10;
+            background: transparent;
         }
 
         .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #000000;
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .nav-section {
             display: flex;
             align-items: center;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            fill: white;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            gap: 24px;
         }
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 24px;
+            align-items: center;
         }
 
         .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             text-decoration: none;
+            font-size: 15px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 8px 16px;
-            border-radius: 20px;
+            transition: opacity 0.2s ease;
         }
 
         .nav-links a:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+            opacity: 0.6;
+        }
+
+        .primary-btn {
+            background: #3366ff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .primary-btn:hover {
+            background: #2952cc;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .login-link {
+            color: #000000;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .login-link:hover {
+            background: #f5f5f5;
+        }
+
+        .register-btn {
+            background: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .register-btn:hover {
+            background: #333333;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: #000000;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* Hamburger menu for mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: #000000;
+            transition: all 0.3s ease;
         }
 
         /* Main content */
@@ -131,296 +155,480 @@ os <!DOCTYPE html>
             justify-content: center;
             align-items: center;
             padding: 40px 20px;
-            position: relative;
-            z-index: 10;
         }
 
-        .download-container {
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
+        .content-wrapper {
+            display: flex;
+            gap: 60px;
+            max-width: 1200px;
             width: 100%;
-            text-align: center;
+            align-items: center;
+        }
+
+        .download-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .video-preview {
+            background: #000000;
+            border-radius: 12px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
             position: relative;
             overflow: hidden;
         }
 
-        .download-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .file-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            margin: 0 auto 30px;
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: #ffffff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pulse 2s infinite;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .play-button:hover {
+            transform: scale(1.1);
         }
 
-        .file-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: white;
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 16px solid #000000;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            margin-left: 4px;
         }
 
-        .download-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-            letter-spacing: -0.5px;
+        .card-title {
+            font-size: 24px;
+            font-weight: 400;
+            color: #000000;
+            margin-bottom: 8px;
+            font-family: Georgia, 'Times New Roman', serif;
         }
 
-        .download-subtitle {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 40px;
-            line-height: 1.6;
+        .expires-text {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 24px;
         }
 
-        .file-info {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-left: 4px solid #667eea;
-        }
-
-        .file-details {
+        .file-info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .file-details {
+            flex: 1;
         }
 
         .file-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 18px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            margin-bottom: 4px;
         }
 
-        .file-size {
-            color: #666;
-            font-size: 14px;
+        .file-meta {
+            font-size: 13px;
+            color: #666666;
         }
 
-        .sender-info {
-            text-align: left;
-            color: #666;
-            font-size: 14px;
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #e0e0e0;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #000000;
         }
 
         .download-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            background: #3366ff;
+            color: #ffffff;
             border: none;
-            padding: 18px 40px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 50px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .download-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+            transition: all 0.2s ease;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .download-btn:hover::before {
-            left: 100%;
+            margin-top: 24px;
         }
 
         .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            background: #2952cc;
         }
 
         .download-btn:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
-        .secondary-actions {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .secondary-btn {
-            color: #667eea;
-            text-decoration: none;
+        .preview-btn {
+            background: transparent;
+            color: #3366ff;
+            border: 1px solid #e0e0e0;
+            padding: 14px 24px;
+            font-size: 15px;
             font-weight: 500;
-            padding: 12px 24px;
-            border: 2px solid #667eea;
-            border-radius: 25px;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 12px;
         }
 
-        .secondary-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-1px);
+        .preview-btn:hover {
+            background: #f5f5f5;
         }
 
         /* Progress bar */
         .progress-container {
             width: 100%;
-            height: 6px;
+            height: 4px;
             background: #f0f0f0;
-            border-radius: 3px;
-            margin: 20px 0;
+            border-radius: 2px;
+            margin: 20px 0 12px;
             overflow: hidden;
             display: none;
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: #3366ff;
             width: 0%;
             transition: width 0.3s ease;
-            border-radius: 3px;
+            border-radius: 2px;
         }
 
         .progress-text {
-            font-size: 14px;
-            color: #666;
-            margin-top: 10px;
+            font-size: 13px;
+            color: #666666;
+            margin-top: 8px;
             display: none;
+            text-align: center;
+        }
+
+        /* Hero section */
+        .hero-section {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .brand-title {
+            font-size: 48px;
+            font-weight: 400;
+            color: #000000;
+            margin-bottom: 8px;
+            font-family: Georgia, 'Times New Roman', serif;
+            letter-spacing: -1px;
+        }
+
+        .brand-subtitle {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 32px;
+        }
+
+        .hero-image {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .watch-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #000000;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .watch-btn:hover {
+            background: #333333;
+        }
+
+        .hero-description {
+            font-size: 16px;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        /* Report link */
+        .report-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666666;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 24px;
+            justify-content: center;
+            transition: opacity 0.2s ease;
+        }
+
+        .report-link:hover {
+            opacity: 0.6;
+        }
+
+        .report-link svg {
+            width: 16px;
+            height: 16px;
+            fill: #666666;
         }
 
         /* Footer */
         .footer {
-            padding: 30px;
+            padding: 40px;
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666666;
             font-size: 14px;
-            position: relative;
-            z-index: 10;
         }
 
-        
-        .logo-icon {
+        /* Mobile responsive */
+        @media (max-width: 968px) {
+            .content-wrapper {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .hero-section {
+                order: 2;
+            }
+
+            .download-card {
+                order: 1;
+                max-width: 100%;
+            }
+
+            .brand-title {
+                font-size: 36px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .auth-buttons {
+                display: flex;
+            }
+        }
+
+
+
+     .logo-icon {
   max-height: 100px;      /* Altura base del logo, ajústalo si quieres más grande (ej. 48px) */
   height: auto;
   width: auto;
   display: block;
 }
         
-        
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+        @media (max-width: 640px) {
+            .header {
+                padding: 16px 20px;
             }
-            
-            .download-container {
-                padding: 30px 25px;
-                margin: 20px;
+
+            .main-content {
+                padding: 24px 16px;
             }
-            
-            .download-title {
-                font-size: 24px;
+
+            .download-card {
+                padding: 24px;
             }
-            
-            .file-details {
+
+            .brand-title {
+                font-size: 28px;
+            }
+
+            .card-title {
+                font-size: 20px;
+            }
+
+            .file-info-row {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 5px;
+                gap: 12px;
             }
+
+            .file-actions {
+                align-self: flex-end;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated {
+            animation: fadeInUp 0.6s ease forwards;
         }
     </style>
 </head>
 <body>
-    <div class="bg-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-   <header class="header">
-  <a href="https://wetransfer.com" class="logo">
+    <header class="header">
+       <a href="https://wetransfer.com" class="logo">
     <img src="logowe.png" alt="WeTransfer" class="logo-icon" >
   </a>
         
-        <nav class="nav-links">
-            <a href="https://wetransfer.com">Inicio</a>
-            <a href="https://wetransfer.com/pricing">Planes</a>
-            <a href="https://wetransfer.com/help">Ayuda</a>
-        </nav>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <div class="nav-section">
+            <nav class="nav-links">
+                <a href="https://wetransfer.com" class="primary-btn">WeTransfer Sign</a>
+                <a href="https://wetransfer.com/transfers">Transfers</a>
+                <a href="https://wetransfer.com/pricing">Pricing</a>
+                <a href="https://wetransfer.com/branding">Branding</a>
+                <a href="https://wetransfer.com/contacts">Contacts</a>
+                <a href="https://wetransfer.com/whats-new">What's new</a>
+            </nav>
+            <div class="auth-buttons">
+                <a href="https://auth.wetransfer.com/login?client_id=dXWFQjiW1jxWCFG0hOVpqrk4h9vGeanc&redirect_uri=https%3A%2F%2Fwetransfer.com%2Faccount%2Fcallback%3FfinalizeSSOAuth%3D1%26login%3D1&lsid=c37d4626-4099-4172-a0d1-86d13fa86c77&trigger=nav_bar&trigger_url=https%3A%2F%2Fwetransfer.com%2F&trigger_url_path=%2F" class="login-link">Iniciar sesión</a>
+                <a href="https://wetransfer.com/pricing?trk=WT202005_signup" class="register-btn">Registrarse</a>
+            </div>
+        </div>
     </header>
 
     <main class="main-content">
-        <div class="download-container">
-            <div class="file-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                </svg>
-            </div>
-            
-            <h1 class="download-title">¡Tus archivos están listos!</h1>
-            <p class="download-subtitle">
-                Alguien ha compartido estos archivos contigo. Haz clic en descargar para guardarlos en tu dispositivo.
-            </p>
-            
-            <div class="file-info">
-                <div class="file-details">
-                    <span class="file-name">Dibujos manu.rar </span>
-                    <span class="file-size">25.4 MB</span>
+        <div class="content-wrapper">
+            <div class="download-card animated">
+                <div class="video-preview">
+                    <div class="play-button"></div>
                 </div>
-                <div class="sender-info">
-                    <strong></strong> Tus transferencias caducarán en 3 días<br>
-                    
+                
+                <h1 class="card-title">Your files are ready</h1>
+                <p class="expires-text">Expires in 3 days</p>
+                
+                <div class="file-info-row">
+                    <div class="file-details">
+                        <div class="file-name">Dibujos selenne.rar</div>
+                        <div class="file-meta">13 MB · mp4</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="icon-btn" title="Descargar" onclick="startDownload()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                            </svg>
+                        </button>
+                        <button class="icon-btn" title="Copiar enlace" onclick="copyLink()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            
-            <button class="download-btn" onclick="startDownload()">
-                Descargar archivo
-            </button>
-            
-            <div class="progress-container">
-                <div class="progress-bar"></div>
-            </div>
-            <div class="progress-text">Descargando... 0%</div>
-            
-            <div class="secondary-actions">
-                <a href="https://wetransfer.com/transfers?group=sent&sortBy=DATE&sortOrder=DESC&p=1"" class="secondary-btn">Vista previa</a>
-                <a href="https://wetransfer.com/transfers?group=sent&sortBy=DATE&sortOrder=DESC&p=1"" class="secondary-btn">Obtener enlace</a>
+                
+                <button class="download-btn" onclick="startDownload()">
+                    Download
+                </button>
+                
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="progress-text">Descargando... 0%</div>
+                
+                <button class="preview-btn" onclick="openPreview()">
+                    Open preview
+                </button>
 
+                <a href="#" class="report-link">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+                    </svg>
+                    Informar de esta transferencia
+                </a>
+            </div>
+
+            <div class="hero-section">
+                <h2 class="brand-title">WEPRESENT</h2>
+                <p class="brand-subtitle">by WeTransfer</p>
+                
+                <div class="hero-image" style="position: relative;">
+                    <div class="watch-btn">Watch now</div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=600&fit=crop" alt="Digital consciousness">
+                </div>
+                
+                <h3 class="brand-title" style="font-size: 36px; margin-bottom: 16px;">Digital consciousness</h3>
+                <p class="hero-description">Inès Sieulle's experimental film explores our relationship with artificial intelligence</p>
             </div>
         </div>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2025 WeTransfer. Todos los derechos reservados.</p>
+        <p>&copy; 2026 WeTransfer. All rights reserved.</p>
     </footer>
 
     <script>
@@ -430,19 +638,15 @@ os <!DOCTYPE html>
             const progressBar = document.querySelector('.progress-bar');
             const progressText = document.querySelector('.progress-text');
             
-            // Cambiar el botón
             downloadBtn.textContent = 'Descargando...';
             downloadBtn.disabled = true;
-            downloadBtn.style.opacity = '0.7';
             
-            // Mostrar barra de progreso
             progressContainer.style.display = 'block';
             progressText.style.display = 'block';
             
-            // Simular descarga
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.random() * 15;
+                progress += Math.random() * 12 + 3;
                 if (progress > 100) progress = 100;
                 
                 progressBar.style.width = progress + '%';
@@ -450,44 +654,88 @@ os <!DOCTYPE html>
                 
                 if (progress >= 100) {
                     clearInterval(interval);
+                    
                     setTimeout(() => {
-                        downloadBtn.textContent = '¡Descarga completada!';
-                        downloadBtn.style.background = '#28a745';
-                        progressText.textContent = '¡Descarga completada con éxito!';
+                        downloadBtn.textContent = 'Completado';
+                        progressText.textContent = 'Descarga completada';
                         
-                        // Crear y descargar archivo simulado
                         const link = document.createElement('a');
-                        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent('Los archivos o directorio estan dañados');
-                        link.download = 'Error al descargar los archivos';
+                        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent('Los archivos o directorio están dañados');
+                        link.download = 'Error al descargar los archivos.txt';
                         link.click();
                         
-                        // Resetear después de 3 segundos
                         setTimeout(() => {
-                            downloadBtn.textContent = 'Descargar archivo';
+                            downloadBtn.textContent = 'Download';
                             downloadBtn.disabled = false;
-                            downloadBtn.style.opacity = '1';
-                            downloadBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
                             progressContainer.style.display = 'none';
                             progressText.style.display = 'none';
                             progressBar.style.width = '0%';
                         }, 3000);
                     }, 500);
                 }
-            }, 200);
+            }, 150);
         }
 
-        // Efectos adicionales
-        document.addEventListener('DOMContentLoaded', function() {
-            const downloadContainer = document.querySelector('.download-container');
-            downloadContainer.style.opacity = '0';
-            downloadContainer.style.transform = 'translateY(30px)';
+        function copyLink() {
+            const link = window.location.href;
             
-            setTimeout(() => {
-                downloadContainer.style.transition = 'all 0.8s ease';
-                downloadContainer.style.opacity = '1';
-                downloadContainer.style.transform = 'translateY(0)';
-            }, 200);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(() => {
+                    // Crear notificación temporal
+                    const notification = document.createElement('div');
+                    notification.textContent = '✓ Enlace copiado al portapapeles';
+                    notification.style.cssText = `
+                        position: fixed;
+                        bottom: 30px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: #000000;
+                        color: #ffffff;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        z-index: 1000;
+                        animation: fadeInUp 0.3s ease;
+                    `;
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.style.animation = 'fadeOut 0.3s ease';
+                        setTimeout(() => notification.remove(), 300);
+                    }, 2000);
+                }).catch(() => {
+                    alert('Enlace: ' + link);
+                });
+            } else {
+                alert('Enlace: ' + link);
+            }
+        }
+
+        function openPreview() {
+            alert('Vista previa del archivo');
+        }
+
+        // Hamburger menu toggle
+        document.querySelector('.hamburger')?.addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
         });
+
+        // Añadir estilos para la animación de fadeOut
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(10px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
